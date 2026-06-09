@@ -1,12 +1,12 @@
-name: SSHX Direct Runner VPS
+name: Tmate Direct Runner VPS
 
 on:
-  workflow_dispatch: # Yeh Actions tab se manual run karne ke liye hai
+  workflow_dispatch: # Actions tab se manual run karne ke liye
 
 jobs:
   vps-session:
     runs-on: ubuntu-latest
-    timeout-minutes: 999999999999999999999999
+    timeout-minutes: 360 # 6 ghante ki hard limit
 
     steps:
       - name: Checkout Repository
@@ -17,13 +17,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y curl wget nano htop
 
-      - name: Connect and Launch SSHX
-        run: |
-          echo "📥 Installing sshx on GitHub runner..."
-          curl -sSf https://sshx.io/get | sh
-          
-          echo "🚀 Starting sshx session..."
-          echo "Logs check karo, wahan https://sshx.io/s/... wala link milega."
-          
-          # Run sshx. Yeh command terminal block karke rakhegi taaki runner chalta rahe.
-          sshx
+      - name: Setup Tmate Session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          # Isko true karne par sirf aapki GitHub account SSH key se hi login hoga
+          # False rakha hai taaki directly web link ya public ssh se connect ho sako
+          limit-access-to-actor: false

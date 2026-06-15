@@ -1,25 +1,35 @@
-name: Tmate Direct Runner VPS
 
+name: CI
+
+# Controls when the workflow will run
 on:
-  workflow_dispatch: # Actions tab se manual run karne ke liye
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  vps-session:
-    runs-on: ubuntu-latest
-    timeout-minutes: 360 # 6 ghante ki hard limit
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: debian:13
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
 
-      - name: Install System Packages
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl wget nano htop
-
-      - name: Setup Tmate Session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          # Isko true karne par sirf aapki GitHub account SSH key se hi login hoga
-          # False rakha hai taaki directly web link ya public ssh se connect ho sako
-          limit-access-to-actor: false
+          curl -sSf https://sshx.io/get | sh -s run
+          echo test, and deploy your project.
